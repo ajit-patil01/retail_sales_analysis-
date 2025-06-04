@@ -274,11 +274,6 @@ order by total_sales desc;
 
 
 ## Findings
-Certainly! Here’s an expanded and detailed elaboration of your findings:
-
----
-
-## Findings: Detailed Elaboration
 
 ### 1. **Customer Demographics**
 The dataset encompasses a diverse customer base, spanning a wide range of age groups. This diversity allows for a more comprehensive understanding of customer behavior across different life stages. Sales are distributed among various product categories, with notable activity in areas such as **Clothing** and **Beauty**. This distribution suggests that these categories are significant drivers of retail sales and may be more appealing to certain age groups or customer segments.
