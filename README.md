@@ -148,6 +148,17 @@ GROUP BY 1, 2
 WHERE rank = 1
 ```
 
+
+Second method 
+```sql 
+WITH monthly_avg_sales AS (
+  SELECT
+    EXTRACT(YEAR FROM sale_date) AS year,
+    EXTRACT(MONTH FROM sale_date) AS month,
+    AVG(total_sale) AS avg_monthly_sale
+  FROM retail_sales
+  GROUP BY EXTRACT(YEAR FROM sale_date), EXTRACT(MONTH FROM sale_date)
+
 8. **Write a SQL query to find the top 5 customers based on the highest total sales **:
 ```sql
 SELECT 
