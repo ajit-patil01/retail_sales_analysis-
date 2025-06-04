@@ -213,12 +213,88 @@ FROM hourly_sale
 GROUP BY shift
 ```
 
-## Findings
 
-- **Customer Demographics**: The dataset includes customers from various age groups, with sales distributed across different categories such as Clothing and Beauty.
-- **High-Value Transactions**: Several transactions had a total sale amount greater than 1000, indicating premium purchases.
-- **Sales Trends**: Monthly analysis shows variations in sales, helping identify peak seasons.
-- **Customer Insights**: The analysis identifies the top-spending customers and the most popular product categories.
+11. **Monthly Sales Growth/Decline**
+# Calculate the month-over-month percentage change in total_sale for each category**:
+    
+```sql
+with Monthly_sales as (
+select 
+extract(year from sale_date) as year , 
+extract(month from sale_date) as month , 
+category  , Sum(total_sale) as total_sales 
+from retail_sales 
+group by extract(year from sale_date) , 
+extract(month from sale_date) , 
+category
+
+ )  , 
+lag_month as (
+select year , month , category ,
+total_sales , 
+lag(total_sales ,1,0) over (partition by category order by year , month ) as previous_sales 
+from   Monthly_sales
+)
+SELECT
+    year ,
+  month,
+    category,
+    previous_sales , 
+    case 
+    when previous_sales > 0 then ((total_sales  - previous_sales)/ previous_sales) * 100 
+    else null 
+    end as percentage_chng
+    from 
+    Lag_month;
+```
+
+12. **Gender-Based Purchasing Habits**
+# Identify the top 3 categories by total_sale for each gender.
+```sql 
+select 
+gender , category , 
+sum(total_sale) as total_sales ,
+rank() over(partition by gender order by sum(total_sale) desc) as rank_
+from retail_sales
+group by gender ,category  ;
+```
+
+13. **Sales in peak hour**
+  
+  ```sql
+ select extract(hour from sale_time) as sales_hour ,
+sum(total_sale) as total_sales , 
+rank () over(order by sum(total_sale) desc ) as rnk
+from retail_sales
+group by sales_hour 
+order by total_sales desc;
+ ```
+
+
+
+
+## Findings
+Certainly! Here’s an expanded and detailed elaboration of your findings:
+
+---
+
+## Findings: Detailed Elaboration
+
+### 1. **Customer Demographics**
+The dataset encompasses a diverse customer base, spanning a wide range of age groups. This diversity allows for a more comprehensive understanding of customer behavior across different life stages. Sales are distributed among various product categories, with notable activity in areas such as **Clothing** and **Beauty**. This distribution suggests that these categories are significant drivers of retail sales and may be more appealing to certain age groups or customer segments.
+
+### 2. **High-Value Transactions**
+The analysis reveals a number of transactions where the total sale amount exceeds **1,000**. These high-value transactions highlight the presence of premium purchases within the dataset. Such transactions could indicate purchases of luxury items, bulk buying, or heightened customer engagement during promotional periods. Identifying these transactions is valuable for targeting high-value customers and tailoring marketing strategies to maximize revenue from this segment.
+
+### 3. **Sales Trends and Seasonality**
+A monthly review of sales data uncovers fluctuations in transaction volumes and revenue, pointing to distinct **sales trends** and **seasonal patterns**. These variations help pinpoint **peak seasons**—periods when sales surge—as well as slower months. Understanding these trends enables businesses to optimize inventory management, staffing, and marketing efforts in anticipation of higher demand during peak times.
+
+### 4. **Customer Insights**
+Through detailed analysis, the project identifies the **top-spending customers**, providing insight into customer loyalty and purchasing power. Additionally, the analysis highlights the **most popular product categories**, revealing which items or categories are preferred by the customer base. These insights are crucial for developing targeted promotions, improving customer retention strategies, and making informed decisions about product assortment and merchandising.
+
+---
+
+In summary, these findings offer a comprehensive view of customer behavior, sales performance, and product popularity, equipping businesses with actionable intelligence to drive growth and customer satisfaction.
 
 ## Reports
 
@@ -230,24 +306,6 @@ GROUP BY shift
 
 This project serves as a comprehensive introduction to SQL for data analysts, covering database setup, data cleaning, exploratory data analysis, and business-driven SQL queries. The findings from this project can help drive business decisions by understanding sales patterns, customer behavior, and product performance.
 
-## How to Use
 
-1. **Clone the Repository**: Clone this project repository from GitHub.
-2. **Set Up the Database**: Run the SQL scripts provided in the `database_setup.sql` file to create and populate the database.
-3. **Run the Queries**: Use the SQL queries provided in the `analysis_queries.sql` file to perform your analysis.
-4. **Explore and Modify**: Feel free to modify the queries to explore different aspects of the dataset or answer additional business questions.
 
-## Author - Zero Analyst
 
-This project is part of my portfolio, showcasing the SQL skills essential for data analyst roles. If you have any questions, feedback, or would like to collaborate, feel free to get in touch!
-
-### Stay Updated and Join the Community
-
-For more content on SQL, data analysis, and other data-related topics, make sure to follow me on social media and join our community:
-
-- **YouTube**: [Subscribe to my channel for tutorials and insights](https://www.youtube.com/@zero_analyst)
-- **Instagram**: [Follow me for daily tips and updates](https://www.instagram.com/zero_analyst/)
-- **LinkedIn**: [Connect with me professionally](https://www.linkedin.com/in/najirr)
-- **Discord**: [Join our community to learn and grow together](https://discord.gg/36h5f2Z5PK)
-
-Thank you for your support, and I look forward to connecting with you!
