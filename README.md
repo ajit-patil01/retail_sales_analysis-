@@ -149,7 +149,8 @@ WHERE rank = 1
 ```
 **Second mehtod** 
 
-``WITH monthly_avg_sales AS (
+``` sql
+ WITH monthly_avg_sales AS (
   SELECT
     EXTRACT(YEAR FROM sale_date) AS year,
     EXTRACT(MONTH FROM sale_date) AS month,
@@ -167,7 +168,8 @@ ranked_months AS (
 )
 SELECT year, month, avg_monthly_sale
 FROM ranked_months
-WHERE rank_ = 1;``
+WHERE rank_ = 1; 
+```
 
 
 
